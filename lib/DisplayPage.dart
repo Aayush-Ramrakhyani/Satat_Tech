@@ -54,6 +54,9 @@ class _ADDStateState extends State<ADDState> {
     {
       await DatabaseHelper().insertHistory(add1, add2, result);
       fetchHistory();
+      setState(() {
+        visiable = false;
+      });
     }
     else
     {
