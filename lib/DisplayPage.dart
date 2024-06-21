@@ -16,6 +16,7 @@ class _ADDStateState extends State<ADDState> {
   String result = '';
   String Quotes = '';
   List<Map<String, dynamic>> history = [];
+  bool visiable = false;
 
 
   @override
@@ -49,8 +50,17 @@ class _ADDStateState extends State<ADDState> {
   }
 
   Future<void> saveToHistory(String add1, String add2, String result) async {
-    await DatabaseHelper().insertHistory(add1, add2, result);
-    fetchHistory();
+    if(adder1.text.isNotEmpty && adder2.text.isNotEmpty)
+    {
+      await DatabaseHelper().insertHistory(add1, add2, result);
+      fetchHistory();
+    }
+    else
+    {
+      setState(() {
+        visiable = true;
+      });
+    }
   }
 
   Future<void> fetchHistory() async {
@@ -96,6 +106,9 @@ class _ADDStateState extends State<ADDState> {
                         border: OutlineInputBorder(),
                         labelText: 'Enter number',
                       ),
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                      ],
                     ),
                   ),
                   Text("+"),
@@ -121,6 +134,8 @@ class _ADDStateState extends State<ADDState> {
               ElevatedButton(onPressed: () {
                 saveToHistory(adder1.text, adder2.text, result);
               }, child: Text("Add")),
+              SizedBox(height: 20),
+              Visibility(visible: visiable ,child: Text("Field Should Not Be Empty" , style: TextStyle(color: Colors.red),)),
               SizedBox(height: 20),
               Text(
                 "History",
